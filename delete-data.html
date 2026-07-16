@@ -339,7 +339,7 @@
                     window.location.hostname === '127.0.0.1' || 
                     window.location.hostname === ''
       ? 'http://127.0.0.1:5000'
-      : '';
+      : 'https://backend-omega-five-52.vercel.app';
 
     fetch(apiBase + '/api/user/request-deletion-web', {
       method: 'POST',
