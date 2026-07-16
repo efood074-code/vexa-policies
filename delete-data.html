@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حذف البيانات - Vexa</title>
+  <meta name="description" content="طلب حذف بيانات المستخدم من تطبيق Vexa" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #7C4DFF; --purple-light: #EDE7FF; --blue: #448AFF;
+      --bg: #F8F7FF; --surface: #FFFFFF; --text: #1A1525;
+      --text-muted: #6B6580; --border: #E8E4F0; --warning: #F59E0B;
+      --error: #EF4444; --success: #10B981; --radius: 20px;
+    }
+    body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--text); line-height: 1.8; }
+
+    header {
+      background: linear-gradient(135deg, #EF4444 0%, #F59E0B 100%);
+      padding: 60px 24px 90px; text-align: center; position: relative; overflow: hidden;
+    }
+    header::before {
+      content: ''; position: absolute; top: -80px; right: -80px;
+      width: 300px; height: 300px; background: rgba(255,255,255,0.08); border-radius: 50%;
+    }
+    header::after {
+      content: ''; position: absolute; bottom: -60px; left: -60px;
+      width: 220px; height: 220px; background: rgba(255,255,255,0.06); border-radius: 50%;
+    }
+    .logo-wrap { display: inline-flex; align-items: center; gap: 14px; margin-bottom: 20px; position: relative; z-index: 1; }
+    .logo-icon {
+      width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 20px;
+      display: flex; align-items: center; justify-content: center; font-size: 28px;
+      backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,0.3);
+    }
+    .logo-name { font-size: 30px; font-weight: 900; color: #fff; }
+    header h1 { font-size: clamp(20px, 5vw, 30px); font-weight: 900; color: #fff; margin-bottom: 10px; position: relative; z-index: 1; }
+    header p { color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600; position: relative; z-index: 1; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 100px; padding: 6px 16px; font-size: 12px; font-weight: 700;
+      color: #fff; margin-top: 14px; backdrop-filter: blur(10px); position: relative; z-index: 1;
+    }
+
+    main { max-width: 820px; margin: -36px auto 60px; padding: 0 16px; position: relative; z-index: 10; }
+
+    .nav-links { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    .nav-link {
+      font-size: 13px; font-weight: 700; color: var(--purple);
+      text-decoration: none; padding: 6px 16px; border-radius: 100px;
+      border: 1.5px solid rgba(124,77,255,0.3); transition: background 0.2s;
+    }
+    .nav-link:hover { background: var(--purple-light); }
+    .nav-link.active { background: var(--error); color: white; border-color: var(--error); }
+
+    .card {
+      background: var(--surface); border-radius: var(--radius); border: 1.5px solid var(--border);
+      padding: 28px 32px; margin-bottom: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+    }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .card-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .card h2 { font-size: 17px; font-weight: 900; color: var(--text); }
+    .card p { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+    .card ul { padding-right: 20px; }
+    .card li { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+    .card li::marker { color: var(--error); }
+    .card li strong { color: var(--text); }
+
+    .warning-box {
+      background: #FFF7ED; border: 1.5px solid #FED7AA;
+      border-radius: 14px; padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; font-weight: 700; color: #92400E;
+    }
+    .error-box {
+      background: #FEF2F2; border: 1.5px solid #FECACA;
+      border-radius: 14px; padding: 14px 18px; margin: 14px 0;
+      font-size: 14px; font-weight: 700; color: #991B1B;
+    }
+
+    /* Steps */
+    .steps { display: flex; flex-direction: column; gap: 16px; margin: 16px 0; }
+    .step { display: flex; gap: 16px; align-items: flex-start; }
+    .step-num {
+      width: 32px; height: 32px; background: linear-gradient(135deg, #EF4444, #F59E0B);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900; color: white; flex-shrink: 0; margin-top: 2px;
+    }
+    .step-content h3 { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .step-content p { font-size: 13px; font-weight: 600; color: var(--text-muted); margin: 0; }
+
+    /* Form */
+    .form-card {
+      background: var(--surface); border-radius: var(--radius);
+      border: 2px solid #FECACA; padding: 32px; margin-bottom: 14px;
+      box-shadow: 0 4px 24px rgba(239,68,68,0.08);
+    }
+    .form-card h2 { font-size: 18px; font-weight: 900; margin-bottom: 6px; color: var(--text); }
+    .form-card > p { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 24px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 800;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .form-group label span { color: var(--error); }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 12px 16px; border-radius: 14px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-family: 'Cairo', sans-serif; font-size: 14px; font-weight: 600;
+      color: var(--text); outline: none; transition: border-color 0.2s;
+      direction: rtl;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--error); box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .checkbox-group input[type="checkbox"] {
+      width: 18px; height: 18px; margin-top: 3px; accent-color: var(--error);
+      flex-shrink: 0; cursor: pointer;
+    }
+    .checkbox-group label { font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
+    .checkbox-group label strong { color: var(--text); }
+
+    .submit-btn {
+      width: 100%; padding: 15px; border-radius: 16px;
+      background: linear-gradient(135deg, #EF4444, #F59E0B);
+      color: white; font-family: 'Cairo', sans-serif; font-size: 15px;
+      font-weight: 900; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s; margin-top: 8px;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(239,68,68,0.3); }
+
+    /* Success state */
+    .success-box {
+      display: none; background: #ECFDF5; border: 1.5px solid #A7F3D0;
+      border-radius: 16px; padding: 24px; text-align: center; margin-top: 16px;
+    }
+    .success-box h3 { font-size: 16px; font-weight: 900; color: #065F46; margin-bottom: 8px; }
+    .success-box p { font-size: 13px; font-weight: 600; color: #047857; }
+
+    .contact-box {
+      background: linear-gradient(135deg, rgba(239,68,68,0.04), rgba(245,158,11,0.04));
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      padding: 28px; text-align: center; margin-top: 10px;
+    }
+    .contact-box h3 { font-size: 16px; font-weight: 900; margin-bottom: 8px; }
+    .contact-box p { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 16px; }
+    .btn {
+      display: inline-block; background: linear-gradient(135deg, #7C4DFF, #448AFF);
+      color: white; font-size: 14px; font-weight: 800; padding: 10px 24px;
+      border-radius: 100px; text-decoration: none; font-family: 'Cairo', sans-serif;
+    }
+
+    footer { text-align: center; padding: 28px 16px; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+    footer a { color: var(--purple); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <div class="logo-icon">📥</div>
+    <span class="logo-name">Vexa</span>
+  </div>
+  <h1>🗑️ حذف البيانات</h1>
+  <p>Data Deletion Request</p>
+  <div class="badge">⚖️ حقك المكفول بحذف بياناتك</div>
+</header>
+
+<main>
+
+  <div class="nav-links">
+    <a href="privacy-policy.html" class="nav-link">🛡️ سياسة الخصوصية</a>
+    <a href="delete-data.html" class="nav-link active">🗑️ حذف البيانات</a>
+  </div>
+
+  <!-- What gets deleted -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF2F2;">ℹ️</div>
+      <h2>ماذا سيتم حذفه؟</h2>
+    </div>
+    <p>عند إرسال طلب حذف البيانات، سنقوم بحذف الآتي خلال <strong>30 يوم عمل</strong>:</p>
+    <ul>
+      <li><strong>حساب المستخدم:</strong> بيانات تسجيل الدخول واسمك وبريدك الإلكتروني.</li>
+      <li><strong>سجل التنزيلات:</strong> جميع سجلات الفيديوهات التي نزّلتها.</li>
+      <li><strong>المفضلة والسجل:</strong> كل المقاطع المحفوظة في قوائمك.</li>
+      <li><strong>التقييمات والبلاغات:</strong> أي تقييمات أو تقارير مشكلات أرسلتها.</li>
+      <li><strong>محادثات الدعم الفني:</strong> جميع رسائل المحادثة مع فريق الدعم.</li>
+      <li><strong>التفضيلات والإعدادات:</strong> إعدادات اللغة والمظهر والإشعارات.</li>
+    </ul>
+    <div class="warning-box">
+      ⚠️ <strong>تنبيه:</strong> الملفات المحملة على جهازك لن تُحذف تلقائياً — يمكنك حذفها يدوياً من مجلد التنزيلات.
+    </div>
+  </div>
+
+  <!-- How to delete from app -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FFF7ED;">📱</div>
+      <h2>الحذف من داخل التطبيق</h2>
+    </div>
+    <p>يمكنك حذف بياناتك مباشرة من التطبيق باتباع هذه الخطوات:</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>افتح الإعدادات</h3>
+          <p>اضغط على أيقونة الإعدادات في الشريط السفلي</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>انتقل إلى الملف الشخصي</h3>
+          <p>اضغط على اسمك أو صورتك في أعلى الصفحة</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>حذف الحساب</h3>
+          <p>اضغط على "حذف الحساب" وأكد الطلب</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request form -->
+  <div class="form-card">
+    <h2>📋 نموذج طلب حذف البيانات</h2>
+    <p>إذا لم تتمكن من الحذف من التطبيق، أرسل طلبك من هنا وسنتعامل معه خلال 30 يوم عمل.</p>
+
+    <form id="deleteForm">
+      <div class="form-group">
+        <label>البريد الإلكتروني المرتبط بحسابك <span>*</span></label>
+        <input type="email" id="email" placeholder="example@gmail.com" required />
+      </div>
+
+      <div class="form-group">
+        <label>الاسم الكامل</label>
+        <input type="text" id="name" placeholder="اسمك الكامل (اختياري)" />
+      </div>
+
+      <div class="form-group">
+        <label>سبب الحذف</label>
+        <select id="reason">
+          <option value="">— اختر السبب (اختياري) —</option>
+          <option value="privacy">خصوصيتي الشخصية</option>
+          <option value="stop_using">توقفت عن استخدام التطبيق</option>
+          <option value="switch">انتقلت لتطبيق آخر</option>
+          <option value="test">حساب تجريبي</option>
+          <option value="other">سبب آخر</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>تفاصيل إضافية</label>
+        <textarea id="details" placeholder="أي تفاصيل أخرى تريد إضافتها..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <p style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px;">ما الذي تريد حذفه؟ <span style="color:var(--error)">*</span></p>
+        <div class="checkbox-group">
+          <input type="checkbox" id="del_account" checked />
+          <label for="del_account"><strong>بيانات الحساب</strong> (الاسم، البريد الإلكتروني)</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="del_history" checked />
+          <label for="del_history"><strong>سجل التنزيلات</strong> والمفضلة</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="del_reports" checked />
+          <label for="del_reports"><strong>التقييمات والبلاغات</strong> ومحادثات الدعم</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="del_all" />
+          <label for="del_all"><strong>كل شيء</strong> — حذف شامل لجميع بياناتي</label>
+        </div>
+      </div>
+
+      <div class="error-box" id="errorBox" style="display:none;">
+        ⚠️ يرجى إدخال بريدك الإلكتروني الصحيح.
+      </div>
+
+      <button type="submit" class="submit-btn">🗑️ إرسال طلب الحذف</button>
+    </form>
+
+    <div class="success-box" id="successBox">
+      <div style="font-size:40px;margin-bottom:12px;">✅</div>
+      <h3>تم استلام طلبك بنجاح</h3>
+      <p>سنقوم بمراجعة طلبك وتنفيذ الحذف خلال 30 يوم عمل على الأكثر.<br/>سيصلك بريد إلكتروني للتأكيد.</p>
+    </div>
+  </div>
+
+  <!-- Alternative: email -->
+  <div class="contact-box">
+    <h3>📧 أو تواصل مباشرة عبر البريد</h3>
+    <p>أرسل طلبك مباشرة إلى فريقنا مع ذكر بريدك الإلكتروني المسجل</p>
+    <a href="mailto:support@vexa.app?subject=طلب%20حذف%20البيانات&body=أرجو%20حذف%20جميع%20بياناتي%20المرتبطة%20بهذا%20البريد%20الإلكتروني." class="btn">
+      📩 support@vexa.app
+    </a>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 Vexa — جميع الحقوق محفوظة</p>
+  <p style="margin-top:8px;">
+    <a href="privacy-policy.html">سياسة الخصوصية</a>
+    &nbsp;•&nbsp;
+    <a href="delete-data.html">حذف البيانات</a>
+  </p>
+</footer>
+
+<script>
+  document.getElementById('deleteForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const errorBox = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+
+    if (!email || !email.includes('@')) {
+      errorBox.style.display = 'block';
+      return;
+    }
+    errorBox.style.display = 'none';
+
+    // In production: send to your backend API
+    // fetch('/api/delete-request', { method: 'POST', body: JSON.stringify({ email }) })
+
+    // Show success
+    document.getElementById('deleteForm').style.display = 'none';
+    successBox.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
