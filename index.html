@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vexa - سياسات التطبيق</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Cairo', sans-serif; background: #F8F7FF; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+    .card {
+      background: white; border-radius: 24px; padding: 48px 40px;
+      box-shadow: 0 8px 40px rgba(124,77,255,0.12); border: 1.5px solid #E8E4F0;
+      max-width: 460px; width: 100%; text-align: center;
+    }
+    .logo { font-size: 48px; margin-bottom: 16px; }
+    h1 { font-size: 26px; font-weight: 900; color: #1A1525; margin-bottom: 8px; }
+    p { font-size: 14px; font-weight: 600; color: #6B6580; margin-bottom: 32px; }
+    .links { display: flex; flex-direction: column; gap: 12px; }
+    a {
+      display: flex; align-items: center; gap: 14px; padding: 18px 20px;
+      border-radius: 16px; text-decoration: none; font-size: 15px; font-weight: 800;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    a:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    .privacy { background: linear-gradient(135deg, #7C4DFF, #448AFF); color: white; }
+    .delete  { background: linear-gradient(135deg, #EF4444, #F59E0B); color: white; }
+    .icon { font-size: 22px; }
+    footer { margin-top: 28px; font-size: 12px; font-weight: 700; color: #A0A0B0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">📥</div>
+    <h1>Vexa</h1>
+    <p>محمّل الفيديوهات الاحترافي — سياسات التطبيق</p>
+    <div class="links">
+      <a href="privacy-policy.html" class="privacy">
+        <span class="icon">🛡️</span>
+        <span>سياسة الخصوصية</span>
+      </a>
+      <a href="delete-data.html" class="delete">
+        <span class="icon">🗑️</span>
+        <span>طلب حذف البيانات</span>
+      </a>
+    </div>
+  </div>
+  <footer>© 2025 Vexa — جميع الحقوق محفوظة</footer>
+</body>
+</html>
