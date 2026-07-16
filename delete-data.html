@@ -334,7 +334,10 @@
     }
     errorBox.style.display = 'none';
 
-    const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    const apiBase = window.location.protocol === 'file:' || 
+                    window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' || 
+                    window.location.hostname === ''
       ? 'http://127.0.0.1:5000'
       : '';
 
