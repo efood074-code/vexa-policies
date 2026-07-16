@@ -301,8 +301,8 @@
   <div class="contact-box">
     <h3>📧 أو تواصل مباشرة عبر البريد</h3>
     <p>أرسل طلبك مباشرة إلى فريقنا مع ذكر بريدك الإلكتروني المسجل</p>
-    <a href="mailto:support@vexa.app?subject=طلب%20حذف%20البيانات&body=أرجو%20حذف%20جميع%20بياناتي%20المرتبطة%20بهذا%20البريد%20الإلكتروني." class="btn">
-      📩 support@vexa.app
+    <a href="mailto:vexadownloader@gmail.com?subject=طلب%20حذف%20البيانات&body=أرجو%20حذف%20جميع%20بياناتي%20المرتبطة%20بهذا%20البريد%20الإلكتروني." class="btn">
+      📩 vexadownloader@gmail.com
     </a>
   </div>
 
@@ -321,21 +321,44 @@
   document.getElementById('deleteForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const email = document.getElementById('email').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const reason = document.getElementById('reason').value;
+    const details = document.getElementById('details').value.trim();
     const errorBox = document.getElementById('errorBox');
     const successBox = document.getElementById('successBox');
 
     if (!email || !email.includes('@')) {
+      errorBox.innerText = '⚠️ يرجى إدخال بريدك الإلكتروني الصحيح.';
       errorBox.style.display = 'block';
       return;
     }
     errorBox.style.display = 'none';
 
-    // In production: send to your backend API
-    // fetch('/api/delete-request', { method: 'POST', body: JSON.stringify({ email }) })
+    const apiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:5000'
+      : '';
 
-    // Show success
-    document.getElementById('deleteForm').style.display = 'none';
-    successBox.style.display = 'block';
+    fetch(apiBase + '/api/user/request-deletion-web', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, name, reason, details })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.success) {
+        document.getElementById('deleteForm').style.display = 'none';
+        successBox.style.display = 'block';
+      } else {
+        errorBox.innerText = '⚠️ ' + (data.error || 'فشل إرسال الطلب، يرجى المحاولة مرة أخرى.');
+        errorBox.style.display = 'block';
+      }
+    })
+    .catch(function(err) {
+      errorBox.innerText = '⚠️ فشل الاتصال بالخادم. يرجى التحقق من اتصالك بالإنترنت.';
+      errorBox.style.display = 'block';
+    });
   });
 </script>
 
